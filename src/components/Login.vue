@@ -7,9 +7,6 @@
       <div class="row">
         <form class="col s12">
           <div class="row">
-            <h1>
-              {{email}}
-            </h1>
             <div class="input-field col s12">
               <input id="email" type="email" class="validate" v-model="email">
               <label for="email">Email</label>
