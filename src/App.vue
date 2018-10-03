@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <navbar></navbar>
-    <router-view/>
+    <router-view v-on:login="login()" />
   </div>
 </template>
 
@@ -12,6 +12,16 @@ export default {
   name: 'App',
   components: {
     Navbar
+  },
+  data() {
+    return  {
+      loggedIn: false
+    }
+  },
+  methods: {
+    login() {
+      this.$children[0].getUser()
+    }
   }
 }
 </script>

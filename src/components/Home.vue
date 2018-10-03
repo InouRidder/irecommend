@@ -1,9 +1,7 @@
 <template>
   <div id="home">
     <div class="container">
-      <h1 class="text-teal centered">
-        Home
-      </h1>
+      <GMap></GMap>
       <p v-if="message">
         {{ message }}
       </p>
@@ -12,22 +10,24 @@
 
 </template>
 <script>
-  import firebase from 'firebase/app'
-  require("firebase/auth");
+import firebase from 'firebase/app'
+import GMap from '@/components/home/GMap'
+require("firebase/auth");
 
-  export default {
-    name: 'Home',
-    props: ['message'],
-    data() {
-      return {
-        password: null,
-        email: null
-      }
-    },
-    methods: {
+
+export default {
+  name: 'Home',
+  props: ['message', 'isLoggedIn'],
+  components:{
+    GMap
+  },
+  data() {
+    return {
+      password: null,
+      email: null
     }
-
   }
+}
 </script>
 
 <style scoped>

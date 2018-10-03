@@ -5,7 +5,7 @@
         {{ msg }}
       </h1>
       <div class="row">
-        <form class="col s12">
+        <form class="col s12" @submit.prevent="login">
           <div class="row">
             <div class="input-field col s12">
               <input id="email" type="email" class="validate" v-model="email">
@@ -21,7 +21,7 @@
           <p v-if="feedback" class="red-text">
             {{feedback}}
           </p>
-          <button class="btn waves-effect waves-light" @click="submitForm">{{ msg }}
+          <button class="btn waves-effect waves-light" @click="login">{{ msg }}
             <i class="material-icons right"></i>
           </button>
 
@@ -51,12 +51,13 @@ export default {
     }
   },
   methods: {
-    submitForm() {
+    login() {
       if (this.email && this.password) {
         this.feedback = null
         firebase.auth().signInWithEmailAndPassword(this.email, this.password)
-        .then(() => {
-          this.$router.push({ name: 'Home', params: { message: 'Succesfully logged in'}})
+        .then((cred) => {
+          this.$emit('login')
+          this.$router.push({ name: 'Home', params: { message: 'Succesfully logged in' }})
         }).catch(error => {
           this.feedback = error.message
         })

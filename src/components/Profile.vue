@@ -4,27 +4,27 @@
       Edit your profile
     </h1>
     <div class="row">
-      <form class="col s12" @submit.prevent="submitForm">
+       <form class="col s12" @submit.prevent="submitForm" v-if="currentUser">
         <div class="row">
           <div class="input-field col s12 m6">
-            <input id="first_name" type="text" class="validate" v-name="firstName">
-            <label for="first_name">First Name</label>
+            <input id="first_name" type="text" class="validate" v-model="currentUser.firstName">
+            <label for="first_name">{{ currentUser.firstName ? '' : 'First name'}}</label>
           </div>
           <div class="input-field col s12 m6">
-            <input id="last_name" type="text" class="validate" v-name="lastName">
-            <label for="last_name">Last Name</label>
+            <input id="last_name" type="text" class="validate" v-model="currentUser.lastName">
+            <label for="last_name">{{ currentUser.lastName ? '' : 'Last name'}}</label>
           </div>
         </div>
         <div class="row">
           <div class="input-field col s12">
-            <input id="bio" type="text" class="validate">
-            <label for="bio">Bio</label>
+            <input id="bio" type="text" class="validate" v-model="currentUser.bio">
+            <label for="bio">{{ currentUser.bio ? '' : 'Bio'}}</label>
           </div>
         </div>
         <div class="row">
           <div class="input-field col s12">
-            <input id="address" type="text" class="validate" v-name="address">
-            <label for="address">Address</label>
+            <input id="address" type="text" class="validate" v-model="currentUser.address">
+            <label for="address">{{ currentUser.address ? '' : 'Address'}}</label>
           </div>
         </div>
         <div class="row">
@@ -38,24 +38,44 @@
 </template>
 
 <script>
-import firebase from 'firebase/app'
-require("firebase/auth");
-
+import db from '@/firebase/init'
+import swal from 'sweetalert'
 export default {
   name: "Profile",
   props: ['currentUser'],
   data() {
     return {
-      firstName: currentUser.firstName,
-      lastName: currentUser.lastName,
-      address: currentUser.address,
-      bio: currentUser.bio
+
     }
   },
   methods: {
     submitForm() {
-      console.log('submitted')
+      let ref = db.collection('users').doc(this.currentUser.uid).update({
+        firstName: this.currentUser.firstName,
+        lastName: this.currentUser.lastName,
+        address: this.currentUser.address
+      })
+      .then(() => {
+        swal({
+          title: "Good job!",
+          text: "You updated your information!",
+          icon: "success",
+          button: "Aww yiss!",
+        })
+      })
+      .catch(error => {
+        swal({
+          title: "Oh noes!",
+          text: "Something went wrong..",
+          icon: "error",
+          button: "Dammit!",
+        })
+      })
+
     }
+  },
+  created() {
+
   }
 }
 </script>

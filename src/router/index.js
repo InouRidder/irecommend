@@ -4,15 +4,16 @@ import Router from 'vue-router'
 import firebase from 'firebase/app'
 require("firebase/auth");
 
-import LogIn from '@/components/LogIn'
-import SignUp from '@/components/SignUp'
+import LogIn from '@/components/auth/LogIn'
+import SignUp from '@/components/auth/SignUp'
 import Home from '@/components/Home'
 import Profile from '@/components/Profile'
-import Profile from '@/components/Profile'
 import GMap from '@/components/home/GMap'
+
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
@@ -27,7 +28,7 @@ export default new Router({
         if (currentUser) {
           next()
         } else {
-          next('LogIn')
+          next('log-in')
         }
       }
     },
