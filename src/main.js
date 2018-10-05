@@ -5,7 +5,14 @@ import Vuex from 'vuex'
 import App from './App'
 import firebase from 'firebase/app'
 import router from './router'
+import * as VueGoogleMaps from "vue2-google-maps";
 
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: "AIzaSyDQ_nJaMNMmyCoU1KynjTG_bBNGReAljEs",
+    libraries: "places" // necessary for places input
+  }
+});
 Vue.use(Vuex)
 
 Vue.config.productionTip = false

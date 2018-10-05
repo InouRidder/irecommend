@@ -1,104 +1,82 @@
 <template>
-  <div id="map">
-    <div class="google-map" id="map" @dblclick="addRecommendation"></div>
-    <AddRecommendation></AddRecommendation>
+  <div>
+    <gmap-map
+      :center="center"
+      :zoom="12"
+      id="map"
+      @rightclick="onRightClick"
+    >
+      <gmap-marker
+        :key="index"
+        v-for="(m, index) in markers"
+        :position="{lat: m.lat, lng: m.lng}"
+        @rightclick="onRightClick"
+      ></gmap-marker>
+    </gmap-map>
   </div>
 
 </template>
 
 <script>
-  import AddRecommendation from '@/components/home/AddRecommendation'
+  import db from '@/firebase/init'
   export default {
     name: 'GMap',
-    components: {
-      AddRecommendation
-    },
     data() {
       return {
-        lat: 53,
-        lng: -2,
-        coords: null,
-        modal: null
+        center: { lat:2, lng:34 },
+        markers: [],
+        map: null
       }
     },
     methods: {
-      getCoordinates() {
-        return new Promise(function(resolve, reject) {
-          if (
-            !("geolocation" in navigator) ||
-            !("getCurrentPosition" in navigator.geolocation)
-          ) {
-            return Promise.reject(new Error("geolocation API not available"));
-          }
-          var options = {
-            timeout: 10000
+      registerClick() {
+        console.log('hello')
+      },
+      setPlace(place) {
+        this.currentPlace = place;
+      },
+      addMarker(recommendation) {
+        const marker = {
+          lat: recommendation.lat,
+          lng: recommendation.lng,
+          title: recommendation.title
+        };
+        this.markers.push(marker);
+      },
+      geolocate: function() {
+        navigator.geolocation.getCurrentPosition(position => {
+          this.center = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
           };
-
-          // browser prompts for permission
-          navigator.geolocation.getCurrentPosition(
-            getPositionCallBack,
-            reject,
-            options
-          );
-
-          function getPositionCallBack(position) {
-            var coords = "";
-            try {
-              coords = {
-                lat: position.coords.latitude,
-                long: position.coords.longitude
-              };
-            } catch (err) {
-              return reject(err);
-            }
-            return resolve(coords);
-          }
         });
       },
-      renderMap() {
-        const map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: this.lat, lng: this.lng },
-          zoom: 15,
-          maxZoom: 15,
-          minZoom: 3,
-          streetViewControl: false
-        })
-        map.addListener('mouseup', (e) => {
-          if (Date.now() - this.clickStart > 500) {
-            this.addRecommendation(e, map)
-          }
-        })
-        map.addListener('mousedown', (e) => {
-          this.clickStart = Date.now()
-        })
+      onRightClick(e) {
+        this.addRecommendation(e)
       },
-      addRecommendation(e, map) {
+      addRecommendation(e) {
         let lat = e.latLng.lat()
         let lng = e.latLng.lng()
-        this.modal.open()
-      },
-      selectModal() {
-        document.addEventListener('DOMContentLoaded', () => {
-          let element = document.getElementById('recommendation-form')
-          this.modal = M.Modal.getInstance(element)
-        })
+        this.$emit('showModal', {lat: lat, lng: lng})
       }
     },
-    created() {
-      this.getCoordinates()
-      .then((coords) => {
-        this.lat = coords.lat
-        this.lng = coords.long
-        this.renderMap()
+    mounted() {
+      let ref = db.collection('recommendations')
+      ref.onSnapshot(snapshot => {
+        snapshot.docChanges().forEach(change => {
+          if (change.type === 'added') {
+            let data = change.doc.data()
+            this.markers.push({
+              lat: data.lat,
+              lng: data.lng,
+              title: data.title,
+              infoWindow: `<h1> ${data.title} </h1> <p> ${data.description} </p>`
+            })
+          }
+        })
       })
-      .catch(error => {
-        console.log(error)
-      })
+      this.geolocate();
     },
-    mounted () {
-      this.selectModal()
-      this.renderMap()
-    }
   }
 </script>
 <style>
