@@ -11,7 +11,13 @@
         v-for="(m, index) in markers"
         :position="{lat: m.lat, lng: m.lng}"
         @rightclick="onRightClick"
-      ></gmap-marker>
+        @click="openInfoWindow(m)"
+      >
+        <GmapInfoWindow :opened="m.infoWindowOpened">
+          <h1>{{m.title}}</h1>
+          <p>{{m.description}}</p>
+        </GmapInfoWindow>
+      </gmap-marker>
     </gmap-map>
   </div>
 
@@ -29,8 +35,8 @@
       }
     },
     methods: {
-      registerClick() {
-        console.log('hello')
+      openInfoWindow(marker) {
+        marker.infoWindowOpened = true
       },
       setPlace(place) {
         this.currentPlace = place;
@@ -66,12 +72,16 @@
         snapshot.docChanges().forEach(change => {
           if (change.type === 'added') {
             let data = change.doc.data()
-            this.markers.push({
+
+            let marker = {
               lat: data.lat,
               lng: data.lng,
               title: data.title,
+              infoWindowOpened: false,
               infoWindow: `<h1> ${data.title} </h1> <p> ${data.description} </p>`
-            })
+            }
+
+            this.markers.push(marker)
           }
         })
       })

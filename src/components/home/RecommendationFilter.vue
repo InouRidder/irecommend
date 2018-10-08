@@ -1,17 +1,6 @@
 <template>
   <nav class="teal">
-    <div class="nav-wrapper">
-      <router-link :to="{ name: 'Home' }" class="brand-logo">Logo</router-link>
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <li v-if="currentUser">
-          <router-link :to="{ name: 'Profile', params: { currentUser: this.currentUser } }">{{ currentUser.firstName}}</router-link>
-        </li>
-        <li v-if="currentUser">
-          <a @click="logout">Logout</a>
-        </li>
-        <li v-if="!currentUser"><router-link :to="{ name: 'LogIn' }">Log In</router-link></li>
-      </ul>
-    </div>
+
   </nav>
 </template>
 <script>
@@ -20,7 +9,7 @@
   import db from '@/firebase/init'
 
   export default {
-    name: 'Navbar',
+    name: 'RecommendationFilter',
     props: ['user' ],
     data() {
       return {
@@ -50,7 +39,6 @@
           this.currentUser = doc.data()
           this.currentUser.uid = user.uid;
         })
-        this.$store.commit('setCurrentUser', this.currentUser)
       }
     }
   }

@@ -1,7 +1,8 @@
 <template>
   <div id="home">
-    <div class="container">
+    <div class="container-fluid">
       <GMap @showModal="displayRecommendationForm"></GMap>
+      <FriendBar></FriendBar>
       <AddRecommendation v-if="showModal" @close="showModal = false" @addRecommendation="addRecommendation"></AddRecommendation>
     </div>
   </div>
@@ -10,6 +11,7 @@
 <script>
 import GMap from '@/components/home/GMap'
 import AddRecommendation from '@/components/home/AddRecommendation'
+import FriendBar from '@/components/home/FriendBar'
 import db from '@/firebase/init'
 import firebase from 'firebase/app'
 require("firebase/auth");
@@ -21,7 +23,8 @@ export default {
   props: ['message', 'isLoggedIn'],
   components:{
     GMap,
-    AddRecommendation
+    AddRecommendation,
+    FriendBar
   },
   data() {
     return {
@@ -59,5 +62,6 @@ export default {
 </script>
 
 <style scoped>
+
 
 </style>
