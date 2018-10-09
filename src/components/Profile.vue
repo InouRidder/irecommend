@@ -39,15 +39,20 @@
 
 <script>
 import db from '@/firebase/init'
+import store from '@/store/index'
+import { mapGetters } from 'vuex'
 import swal from 'sweetalert'
+
 export default {
   name: "Profile",
-  props: ['currentUser'],
   data() {
     return {
 
     }
   },
+  computed: {
+      ...mapGetters(['loggedIn', 'currentUser'])
+    },
   methods: {
     submitForm() {
       let ref = db.collection('users').doc(this.currentUser.uid).update({
@@ -56,6 +61,7 @@ export default {
         address: this.currentUser.address
       })
       .then(() => {
+        this.$store.commit('logIn', this.currentUser)
         swal({
           title: "Good job!",
           text: "You updated your information!",
