@@ -37,7 +37,7 @@ export default new Vuex.Store({
     addRecommendation(state, payload) {
       state.recommendations.push(payload)
     },
-    setInitialFilteredRecommenations(state, payload) {
+    setInitialRecommendations(state, payload) {
       state.filteredRecommendations = state.recommendations
     },
     filterByType (state, payload) {

@@ -59,9 +59,7 @@
           currentUser.uid = user.uid;
           this.$store.commit('logIn', currentUser)
           this.$store.dispatch('fetchRecommendations', currentUser.uid)
-          .then(function() {
-            this.$store.commit('setInitialFilteredRecommenations')
-          })
+          .then(this.$store.commit('setInitialRecommendations'))
         })
       }
     }
