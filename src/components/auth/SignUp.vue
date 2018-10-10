@@ -72,7 +72,8 @@
             let ref = db.collection('users').doc(doc.user.uid)
             ref.set({
               firstName: this.firstName,
-              lastName: this.lastName
+              lastName: this.lastName,
+              friends: []
             })
             this.$emit('login')
             this.$router.push({ name: 'Home', params: { message: 'Succesfully logged in'}})

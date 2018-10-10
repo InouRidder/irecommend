@@ -7,15 +7,22 @@
       @rightclick="onRightClick"
     >
       <gmap-marker
+        v-for="(m, index) in filteredRecommendations"
         :key="index"
-        v-for="(m, index) in markers"
         :position="{lat: m.lat, lng: m.lng}"
+        :clickable="true"
         @rightclick="onRightClick"
-        @click="openInfoWindow(m)"
+        @click="toggleInfoWindow(m)"
       >
-        <GmapInfoWindow :opened="m.infoWindowOpened">
-          <h1>{{m.title}}</h1>
+        <GmapInfoWindow :opened="m.infoWindowOpened" @closeclick="toggleInfoWindow(m)">
+          <h4>{{m.title}}</h4>
           <p>{{m.description}}</p>
+          <ul>
+            <li v-for="type in m.types">
+              {{type}}
+            </li>
+          </ul>
+
         </GmapInfoWindow>
       </gmap-marker>
     </gmap-map>
@@ -24,30 +31,23 @@
 </template>
 
 <script>
-  import db from '@/firebase/init'
+  import { mapGetters, mapMutations } from 'vuex'
+
   export default {
     name: 'GMap',
     data() {
       return {
         center: { lat:2, lng:34 },
-        markers: [],
         map: null
       }
     },
+    computed: {
+      ...mapGetters(['currentUser','recommendations', 'filteredRecommendations'])
+    },
     methods: {
-      openInfoWindow(marker) {
-        marker.infoWindowOpened = true
-      },
-      setPlace(place) {
-        this.currentPlace = place;
-      },
-      addMarker(recommendation) {
-        const marker = {
-          lat: recommendation.lat,
-          lng: recommendation.lng,
-          title: recommendation.title
-        };
-        this.markers.push(marker);
+      ...mapMutations(['addRecommendation']),
+      toggleInfoWindow(marker) {
+        marker.infoWindowOpened = !marker.infoWindowOpened
       },
       geolocate: function() {
         navigator.geolocation.getCurrentPosition(position => {
@@ -66,25 +66,7 @@
         this.$emit('showModal', {lat: lat, lng: lng})
       }
     },
-    mounted() {
-      let ref = db.collection('recommendations')
-      ref.onSnapshot(snapshot => {
-        snapshot.docChanges().forEach(change => {
-          if (change.type === 'added') {
-            let data = change.doc.data()
-
-            let marker = {
-              lat: data.lat,
-              lng: data.lng,
-              title: data.title,
-              infoWindowOpened: false,
-              infoWindow: `<h1> ${data.title} </h1> <p> ${data.description} </p>`
-            }
-
-            this.markers.push(marker)
-          }
-        })
-      })
+    created() {
       this.geolocate();
     },
   }

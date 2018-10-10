@@ -2,7 +2,7 @@
   <div id="home">
     <div class="container-fluid">
       <GMap @showModal="displayRecommendationForm"></GMap>
-      <FriendBar></FriendBar>
+      <SideNav></SideNav>
       <AddRecommendation v-if="showModal" @close="showModal = false" @addRecommendation="addRecommendation"></AddRecommendation>
     </div>
   </div>
@@ -11,12 +11,12 @@
 <script>
 import GMap from '@/components/home/GMap'
 import AddRecommendation from '@/components/home/AddRecommendation'
-import FriendBar from '@/components/home/FriendBar'
+import SideNav from '@/components/home/SideNav'
 import db from '@/firebase/init'
 import firebase from 'firebase/app'
 require("firebase/auth");
 import swal from 'sweetalert'
-
+import {mapGetters} from 'vuex'
 
 export default {
   name: 'Home',
@@ -24,7 +24,10 @@ export default {
   components:{
     GMap,
     AddRecommendation,
-    FriendBar
+    SideNav
+  },
+  computed: {
+    ...mapGetters(['loggedIn', 'currentUser'])
   },
   data() {
     return {
@@ -39,13 +42,12 @@ export default {
       this.showModal = true
     },
     addRecommendation(data) {
-      console.log(data)
       db.collection('recommendations').add({
         lat: this.coords.lat,
         lng: this.coords.lng,
         title: data.title,
         description: data.description,
-        user_id: firebase.auth().currentUser.uid,
+        user_id: this.currentUser.uid,
         types: data.selectedTypes
       }).then(() => {
         this.showModal = false
@@ -54,7 +56,7 @@ export default {
           button: "Aww yiss!"
         })
       }).catch(error => {
-
+        console.log(error)
       })
     }
   }

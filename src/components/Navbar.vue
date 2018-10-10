@@ -32,7 +32,7 @@
       }
     },
     created() {
-      console.log(this.getUser())
+      this.getUser()
     },
     computed: {
       ...mapGetters(['loggedIn', 'currentUser'])
@@ -41,6 +41,7 @@
       logout() {
         firebase.auth().signOut()
         .then(() => {
+          console.log('hello')
           this.$store.commit('logOut')
           this.$router.push('log-in')
         })
@@ -52,11 +53,15 @@
         let user = firebase.auth().currentUser
         if (!user) return;
         let ref = db.collection('users').doc(user.uid)
-        let currentUser = {name: 'lol'}
+        let currentUser = {}
         ref.get().then((doc) => {
           currentUser = doc.data()
           currentUser.uid = user.uid;
           this.$store.commit('logIn', currentUser)
+          this.$store.dispatch('fetchRecommendations', currentUser.uid)
+          .then(function() {
+            this.$store.commit('setInitialFilteredRecommenations')
+          })
         })
       }
     }

@@ -33,7 +33,7 @@
                     <span>See</span>
                   </label>
                 </div>
-            </div>
+              </div>
             <div class="row center-align">
               <h4 class="red-text" v-if="feedback">
                 {{feedback}}
