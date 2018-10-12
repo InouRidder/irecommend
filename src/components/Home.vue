@@ -2,7 +2,6 @@
   <div id="home">
     <div class="container-fluid">
       <GMap @showModal="displayRecommendationForm"></GMap>
-      <SideNav></SideNav>
       <AddRecommendation v-if="showModal" @close="showModal = false" @addRecommendation="addRecommendation"></AddRecommendation>
     </div>
   </div>

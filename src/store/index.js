@@ -8,6 +8,7 @@ export default new Vuex.Store({
   state: {
     currentUser: null,
     loggedIn: false,
+    followingUIDS: [],
     recommendations: [],
     filteredRecommendations: [],
     possibleTypes: [
@@ -29,7 +30,19 @@ export default new Vuex.Store({
     logIn(state, currentUser) {
       state.currentUser = currentUser
       state.loggedIn = true
+
     },
+    setFollowingUIDS(state) {
+      state.followingUIDS = state.currentUser.friends.map(friend => {
+        return friend.uid
+      })
+      state.followingUIDS.push(state.currentUser.uid)
+    },
+    // filterRecommendationUID(state) {
+    //   state.filteredRecommendations = state.filteredRecommendations.filter((recommendation) => {
+    //     return state.followingUIDS.includes(recommendation.user_id)
+    //   })
+    // },
     logOut (state, payload) {
       state.currentUser = null
       state.loggedIn = false
@@ -41,20 +54,24 @@ export default new Vuex.Store({
       state.filteredRecommendations = state.recommendations
     },
     filterByType (state, payload) {
+      // remove filter based on userUID if not in FOLLOWINGUID
       // If a recommendation has one of the selected types in its type array, then it should be returned as false
-      if (payload.selectedTypes) {
-        state.filteredRecommendations = state.recommendations.filter(recommendation => {
-          let recommendationTypes = new Set(recommendation.types)
-          let included;
-          payload.selectedTypes.some(type => {
-            included = recommendationTypes.has(type.value)
-            return included
-          })
-          return included // dont filter it out if one of the types is included
+      let selectedTypes = state.possibleTypes.filter(type => type.selected)
+
+      let followingUIDS = new Set(state.followingUIDS)
+      state.filteredRecommendations = state.recommendations.filter(recommendation => {
+        let recommendationTypes = new Set(recommendation.types)
+        let typeIncluded;
+        let following = followingUIDS.has(recommendation.user_id)
+
+        if (!following) return // if not following, dont test if filter matches
+
+        selectedTypes.some(type => {
+          typeIncluded = recommendationTypes.has(type.value)
+          return typeIncluded
         })
-      } else { // if not filtered, just set it to all recommendations of user
-        state.filteredRecommendations = state.recommendations
-      }
+        return typeIncluded // dont filter it out if one of the types is included
+      })
     },
     saveCurrentUser(state, payload) {
       db.collection('users').doc(state.currentUser.uid).update({
@@ -80,9 +97,17 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    fetchRecommendations({commit}, uid) {
-      return new Promise((resove, reject) => {
-        let ref = db.collection('recommendations')
+    // dispatch, commit, state
+    logIn({dispatch, commit}, currentUser) {
+      commit('logIn', currentUser)
+      dispatch('fetchRecommendations')
+    },
+    fetchRecommendations({commit, state}) {
+      // 1. Remove UID loop and move to Single Query
+      // 2. Automatically update filteredRecommendations on every update
+
+      state.followingUIDS.forEach(uid => {
+        let ref = db.collection('recommendations').where("user_id", "==", uid)
         ref.onSnapshot(snapshot => {
           snapshot.docChanges().forEach(change => {
             if (change.type === 'added') {
@@ -91,6 +116,7 @@ export default new Vuex.Store({
                 lat: data.lat,
                 lng: data.lng,
                 title: data.title,
+                user_id: data.user_id,
                 types: data.types,
                 description: data.description,
                 infoWindowOpened: false
@@ -101,7 +127,7 @@ export default new Vuex.Store({
         })
       })
     },
-    async updateUser({commit}) {
+    updateUser({dispatch, commit}) {
       commit('saveCurrentUser')
     }
   }

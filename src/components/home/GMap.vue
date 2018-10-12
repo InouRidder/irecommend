@@ -1,5 +1,6 @@
 <template>
   <div>
+    <SideNav></SideNav>
     <gmap-map
       :center="center"
       :zoom="12"
@@ -7,8 +8,8 @@
       @rightclick="onRightClick"
     >
       <gmap-marker
-        v-for="(m, index) in filteredRecommendations"
-        :key="index"
+        v-for="m in filteredRecommendations"
+        :key="m.uid"
         :position="{lat: m.lat, lng: m.lng}"
         :clickable="true"
         @rightclick="onRightClick"
@@ -17,6 +18,7 @@
         <GmapInfoWindow :opened="m.infoWindowOpened" @closeclick="toggleInfoWindow(m)">
           <h4>{{m.title}}</h4>
           <p>{{m.description}}</p>
+          <small>{{m.user_id}}</small>
           <ul>
             <li v-for="type in m.types">
               {{type}}
@@ -32,6 +34,7 @@
 
 <script>
   import { mapGetters, mapMutations } from 'vuex'
+  import SideNav from '@/components/home/SideNav'
 
   export default {
     name: 'GMap',
@@ -40,6 +43,9 @@
         center: { lat:2, lng:34 },
         map: null
       }
+    },
+    components: {
+      SideNav
     },
     computed: {
       ...mapGetters(['currentUser','recommendations', 'filteredRecommendations'])

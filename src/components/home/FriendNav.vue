@@ -1,10 +1,13 @@
 <template>
   <div>
     <form @submit.prevent="submitQuery">
-      <input type="text" name="query" v-model="query" placeholder="Search for friends">
+      <input @keyup="submitQuery" type="text" v-model="query" placeholder="Search for friends" autocorrect="off">
     </form>
     <h5 v-if="searching">
       Looking for friends.....
+    </h5>
+    <h5 v-if="feedback">
+      {{feedback}}
     </h5>
     <ul class="collection with-header" v-else>
       <li class="collection-item" v-for="friend in results" :key="friend.uid">
@@ -39,7 +42,8 @@
         query: "",
         results: [],
         usersDB: null,
-        searching: false
+        searching: false,
+        feedback: null
       }
     },
     components: {
@@ -51,6 +55,7 @@
     methods: {
       submitQuery() {
         this.results = []
+        this.feedback = null
         this.searching = true
         let self = this;
         this.usersDB.where('firstName', "==", this.query).get()
@@ -64,31 +69,46 @@
               address: data.address,
               bio: data.bio
             }
+            // If already found
+            if (self.results.map(function(result) {return result.uid}).includes(friend.uid)) {return}
+
             self.results.push(friend)
           })
           self.searching = false
-
         })
         .catch(function(error) {
             console.log("Error getting documents: ", error)
         })
       },
       toggleFollow(friend) {
+        console.log('hi')
+        console.log(friend.following)
         friend.following = !friend.following
+        console.log(friend.following)
       },
       unFriend(uid) {
         this.currentUser.friends = this.currentUser.friends.filter(function(friend) {
           return !(uid == friend.uid)
         })
+        this.$store.commit('setFollowingUIDS')
+        this.$store.commit('filterByType')
         this.$store.dispatch('updateUser')
       },
       beFriend(friend) {
-        this.currentUser.friends.push({firstName: friend.firstName, lastName: friend.lastName, uid: friend.uid})
-        this.results = this.results.filter(function(result) {
-          return !(result.uid == friend.uid)
-        })
-      this.$store.dispatch('updateUser')
-      this.$store.dispatch('fetchRecommendations', friend.uid)
+        if (this.currentUser.friends.map(function(friend){return friend.uid}).includes(friend.uid)) {
+          this.feedback = "Already friends!"
+        } else {
+
+          this.currentUser.friends.push({firstName: friend.firstName, lastName: friend.lastName, uid: friend.uid, following: true})
+          this.results = this.results.filter(function(result) {
+            return !(result.uid == friend.uid)
+          })
+          this.$store.commit('setFollowingUIDS')
+          this.$store.dispatch('fetchRecommendations')
+          this.$store.commit('filterByType')
+          this.$store.dispatch('updateUser')
+        }
+
       }
     },
     created() {

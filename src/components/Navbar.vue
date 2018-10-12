@@ -57,8 +57,9 @@
         ref.get().then((doc) => {
           currentUser = doc.data()
           currentUser.uid = user.uid;
-          this.$store.commit('logIn', currentUser)
-          this.$store.dispatch('fetchRecommendations', currentUser.uid)
+          this.$store.dispatch('logIn', currentUser)
+          this.$store.commit('setFollowingUIDS')
+          this.$store.dispatch('fetchRecommendations')
           .then(this.$store.commit('setInitialRecommendations'))
         })
       }
