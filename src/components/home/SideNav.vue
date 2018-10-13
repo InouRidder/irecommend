@@ -1,18 +1,16 @@
 <template>
   <div>
-    <!-- state is lost after if closes in out -->
   <div id="sideFriendBar" v-if="display">
-
     <div class="top-header">
       <div>
         {{currentUser.firstName}}
       </div>
-      <a @click="toggleSideNav" class="btn-floating scale-transition"><i class="material-icons">minimize</i></a>
+      <a @click="toggleSideNav" class="btn-floating scale-transition"><i class="material-icons">fast_rewind</i></a>
     </div>
     <div class="row">
       <div class="col s12">
         <gmap-autocomplete
-          @place_changed="setPlace">
+          @place_changed="setCenter">
         </gmap-autocomplete>
       </div>
     </div>
@@ -36,7 +34,7 @@
 
 
   </div>
-  <a v-if="!display" @click="toggleSideNav" class="btn-floating scale-transition"><i class="material-icons">add</i></a>
+  <a v-if="!display" @click="toggleSideNav" class="btn-floating"><i class="material-icons">fast_forward</i></a>
   </div>
 </template>
 
@@ -64,10 +62,11 @@
       toggleSideNav() {
         if (this.loggedIn) {
           this.display = !this.display
+          this.$emit('toggleSideNav', !this.display)
         }
       },
-      setPlace(place) {
-        console.log(place)
+      setCenter(place) {
+        this.$emit('setCenter', place)
       },
       toggleIntNav(element) {
         this.displayFriends = (element === "friends")
@@ -81,7 +80,7 @@
   height: 91vh;
   background-color: #FFF;
   width: 250px;
-  /*z-index: 999;*/
+  z-index: 999;
   border: rgba(251,251,251,0.9);
 }
 .top-header {

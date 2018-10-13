@@ -1,10 +1,11 @@
 <template>
   <div>
-    <SideNav></SideNav>
+    <SideNav @setCenter="setCenter" @toggleSideNav="toggleMapClass"></SideNav>
     <gmap-map
       :center="center"
       :zoom="12"
       id="map"
+      v-bind:class="mapWidth"
       @rightclick="onRightClick"
     >
       <gmap-marker
@@ -40,20 +41,33 @@
     name: 'GMap',
     data() {
       return {
-        center: { lat: 2, lng: 34 },
-        map: null
+        map: null,
+        center: {lat: 40, lng: 32},
+        fullMap: true
       }
     },
     components: {
       SideNav
     },
     computed: {
-      ...mapGetters(['currentUser','recommendations', 'filteredRecommendations'])
+      ...mapGetters(['currentUser','recommendations', 'filteredRecommendations']),
+      mapWidth: function() {
+        return {
+          full: this.fullMap,
+          partial: !this.fullMap
+        }
+      }
     },
     methods: {
       ...mapMutations(['addRecommendation']),
       toggleInfoWindow(marker) {
         marker.infoWindowOpened = !marker.infoWindowOpened
+      },
+      toggleMapClass(direction) {
+        this.fullMap = direction
+      },
+      setCenter(place) {
+        this.center = {lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }
       },
       geolocate: function() {
         navigator.geolocation.getCurrentPosition(position => {
@@ -79,15 +93,24 @@
 </script>
 <style>
 
-#map {
-  width: 100%;
-  height: 100%;
+#map.partial {
+  width: 90%;
+  height: 91vh;
   margin: 0 auto;
   background: #FFF;
   position: absolute;
-  left: 0;
-  top: 0;
-  z-index: -1;
+  left: 250px;
+  top: 9vh;
+}
+
+#map.full {
+  width: 100%;
+  height: 91vh;
+  margin: 0 auto;
+  background: #FFF;
+  position: absolute;
+  left: 0px;
+  top: 9vh;
 }
 
 </style>
