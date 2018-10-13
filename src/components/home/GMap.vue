@@ -16,6 +16,7 @@
         @rightclick="onRightClick"
         @click="toggleInfoWindow(m)"
       >
+        <!-- :icon="{ url: require('../../assets/img/marker-a.png')}" -->
         <GmapInfoWindow :opened="m.infoWindowOpened" @closeclick="toggleInfoWindow(m)">
           <h4>{{m.title}}</h4>
           <p>{{m.description}}</p>
@@ -94,7 +95,7 @@
 <style>
 
 #map.partial {
-  width: 90%;
+  width: calc(100% - 250px);
   height: 91vh;
   margin: 0 auto;
   background: #FFF;

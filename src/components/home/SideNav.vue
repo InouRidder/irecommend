@@ -5,7 +5,11 @@
       <div>
         {{currentUser.firstName}}
       </div>
-      <a @click="toggleSideNav" class="btn-floating scale-transition"><i class="material-icons">fast_rewind</i></a>
+      <div>
+        <a  @click="explain" class="btn-floating"><i class="material-icons">info_outline
+        </i></a>
+        <a @click="toggleSideNav" class="btn-floating scale-transition"><i class="material-icons">keyboard_arrow_left</i></a>
+      </div>
     </div>
     <div class="row">
       <div class="col s12">
@@ -18,8 +22,12 @@
     <div class="row">
       <div class="col s12">
         <ul class="tabs">
-          <li class="tab col s3"><a @click="toggleIntNav('recommendations')">Recommendations</a></li>
-          <li class="tab col s3"><a @click="toggleIntNav('friends')" >Friends</a></li>
+          <li class="tab col s6 active">
+            <a @click="toggleIntNav('recommendations')">Recommendations</a>
+          </li>
+          <li class="tab col s6">
+            <a @click="toggleIntNav('friends')" >Friends</a>
+          </li>
         </ul>
       </div>
     </div>
@@ -31,10 +39,14 @@
       </div>
     </div>
 
+    <div class="row">
+
+    </div>
+
 
 
   </div>
-  <a v-if="!display" @click="toggleSideNav" class="btn-floating"><i class="material-icons">fast_forward</i></a>
+  <a v-if="!display" @click="toggleSideNav" class="see-nav btn-floating"><i class=" material-icons">keyboard_arrow_right</i></a>
   </div>
 </template>
 
@@ -42,6 +54,9 @@
   import { mapGetters } from 'vuex'
   import RecommendationNav from '@/components/home/RecommendationNav'
   import FriendNav from '@/components/home/FriendNav'
+  import swal from 'sweetalert'
+
+
   export default {
     name: 'SideNav',
     data () {
@@ -64,6 +79,32 @@
           this.display = !this.display
           this.$emit('toggleSideNav', !this.display)
         }
+      },
+      explain() {
+        swal("Right click on the map to add your own recommendation, or use the location search bar to search for a place elsewhere", {
+          buttons: {
+            cancel: "Sweet",
+            catch: {
+              text: "I goooot this!",
+              value: "BOOM",
+            }
+          },
+        })
+        .then((value) => {
+          switch (value) {
+
+            case "defeat":
+              swal("I love to recommend stuff!!");
+              break;
+
+            case "catch":
+              swal("You", "Be", "Da Best");
+              break;
+
+            default:
+              swal("These are the best recommendations of my life!");
+          }
+        });
       },
       setCenter(place) {
         this.$emit('setCenter', place)
@@ -99,5 +140,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.see-nav {
+  margin-top: 60px;
+  margin-left: 10px;
 }
 </style>

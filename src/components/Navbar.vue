@@ -1,7 +1,9 @@
 <template>
   <nav class="teal">
     <div class="nav-wrapper">
-      <router-link :to="{ name: 'Home' }" class="brand-logo">Logo</router-link>
+      <router-link :to="{ name: 'Home' }" class="brand-logo">
+        iRecommend
+      </router-link>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
         <li v-if="currentUser">
           <router-link :to="{ name: 'Profile' }">{{ currentUser.firstName}}</router-link>

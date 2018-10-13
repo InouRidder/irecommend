@@ -13,7 +13,7 @@
       <li class="collection-item" v-for="friend in results" :key="friend.uid">
         <div> {{ friend.firstName }} {{friend.lastName}}
           <a @click="beFriend(friend)" class="secondary-content">
-            <i class="material-icons">add</i>
+            <i class="material-icons">person_add</i>
           </a>
         </div>
       </li>
