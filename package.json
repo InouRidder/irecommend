@@ -12,6 +12,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "dotenv-webpack": "^1.5.7",
     "firebase": "^5.5.2",
     "firebase-auth": "^0.1.2",
     "swal": "^0.1.0",

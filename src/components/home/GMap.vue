@@ -40,7 +40,7 @@
     name: 'GMap',
     data() {
       return {
-        center: { lat:2, lng:34 },
+        center: { lat: 2, lng: 34 },
         map: null
       }
     },

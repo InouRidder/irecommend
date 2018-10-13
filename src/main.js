@@ -7,9 +7,10 @@ import firebase from 'firebase/app'
 import router from './router'
 import * as VueGoogleMaps from "vue2-google-maps";
 
+
 Vue.use(VueGoogleMaps, {
   load: {
-    key: "AIzaSyDQ_nJaMNMmyCoU1KynjTG_bBNGReAljEs",
+    key: process.env.plugins['1'].definitions['process.env.GOOGLE_KEY'],
     libraries: "places" // necessary for places input
   }
 });

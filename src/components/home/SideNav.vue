@@ -9,6 +9,13 @@
       </div>
       <a @click="toggleSideNav" class="btn-floating scale-transition"><i class="material-icons">minimize</i></a>
     </div>
+    <div class="row">
+      <div class="col s12">
+        <gmap-autocomplete
+          @place_changed="setPlace">
+        </gmap-autocomplete>
+      </div>
+    </div>
 
     <div class="row">
       <div class="col s12">
@@ -59,6 +66,9 @@
           this.display = !this.display
         }
       },
+      setPlace(place) {
+        console.log(place)
+      },
       toggleIntNav(element) {
         this.displayFriends = (element === "friends")
       }
@@ -78,7 +88,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 60px 30px;
+  padding: 30px 30px;
 }
 
 .tabs {
