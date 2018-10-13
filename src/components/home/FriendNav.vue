@@ -1,7 +1,7 @@
 <template>
   <div>
     <form @submit.prevent="submitQuery">
-      <input @keyup="submitQuery" type="text" v-model="query" placeholder="Search for friends" autocorrect="off">
+      <input @keyup="submitQuery" type="text" v-model="query" placeholder="Search for friends">
     </form>
     <h5 v-if="searching">
       Looking for friends.....
