@@ -47,6 +47,7 @@ export default {
         title: data.title,
         description: data.description,
         user_id: this.currentUser.uid,
+        userName: `${this.currentUser.firstName} ${this.currentUser.lastName}`,
         types: data.selectedTypes
       }).then(() => {
         this.showModal = false

@@ -81,10 +81,9 @@
         })
       },
       toggleFollow(friend) {
-        console.log('hi')
-        console.log(friend.following)
         friend.following = !friend.following
-        console.log(friend.following)
+        this.$store.dispatch('filterOnUDIS')
+
       },
       unFriend(uid) {
         this.currentUser.friends = this.currentUser.friends.filter(function(friend) {

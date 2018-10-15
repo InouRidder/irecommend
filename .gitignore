@@ -8,7 +8,7 @@ yarn-error.log*
 src/firebase
 
 # Editor directories and files
-.env
+.secrets
 .idea
 .vscode
 *.suo

@@ -12,7 +12,7 @@ import GMap from '@/components/home/GMap'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   routes: [
     {
@@ -22,14 +22,6 @@ export default new Router({
       props: true,
       meta: {
         requiresAuth: true
-      },
-      beforeEnter(to, from, next) {
-        let currentUser = firebase.auth().currentUser;
-        if (currentUser) {
-          next()
-        } else {
-          next('log-in')
-        }
       }
     },
     {
@@ -52,23 +44,24 @@ export default new Router({
       name: 'Profile',
       component: Profile,
       props: true,
-      beforeEnter(to, from, next) {
-        let currentUser = firebase.auth().currentUser;
-        if (currentUser) {
-          next()
-        } else {
-          from()
-        }
+      meta: {
+        requiresAuth: true
       }
     }
   ]
 })
 
-// function isAuthorized(to, from, next, self) {
-//   let currentUser = firebase.auth().currentUser;
-//   if (self.meta.requiresAuth && currentUser) {
-//     next()
-//   } else {
-//     from()
-//   }
-// }
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(rec => rec.meta.requiresAuth)) {
+    let currentUser = firebase.auth().currentUser;
+      if (currentUser) {
+        next()
+      } else {
+        next({name: 'LogIn'})
+      }
+  } else {
+    next()
+  }
+})
+
+export default router

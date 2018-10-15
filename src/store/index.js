@@ -33,16 +33,16 @@ export default new Vuex.Store({
 
     },
     setFollowingUIDS(state) {
-      state.followingUIDS = state.currentUser.friends.map(friend => {
-        return friend.uid
+      let followingUIDS = []
+      state.currentUser.friends.forEach(friend => {
+        if (friend.following) {
+          followingUIDS.push(friend.uid)
+        }
       })
-      state.followingUIDS.push(state.currentUser.uid)
+      followingUIDS.push(state.currentUser.uid)
+      state.followingUIDS = followingUIDS
+
     },
-    // filterRecommendationUID(state) {
-    //   state.filteredRecommendations = state.filteredRecommendations.filter((recommendation) => {
-    //     return state.followingUIDS.includes(recommendation.user_id)
-    //   })
-    // },
     logOut (state, payload) {
       state.currentUser = null
       state.loggedIn = false
@@ -105,7 +105,6 @@ export default new Vuex.Store({
     fetchRecommendations({commit, state}) {
       // 1. Remove UID loop and move to Single Query
       // 2. Automatically update filteredRecommendations on every update
-
       state.followingUIDS.forEach(uid => {
         let ref = db.collection('recommendations').where("user_id", "==", uid)
         ref.onSnapshot(snapshot => {
@@ -129,6 +128,10 @@ export default new Vuex.Store({
     },
     updateUser({dispatch, commit}) {
       commit('saveCurrentUser')
+    },
+    filterOnUDIS({dispatch, commit}) {
+      commit('setFollowingUIDS')
+      commit('filterByType')
     }
   }
 })

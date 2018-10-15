@@ -15,12 +15,13 @@
         :clickable="true"
         @rightclick="onRightClick"
         @click="toggleInfoWindow(m)"
+        :icon="{url: require(`../../assets/${markerTypesToIcon(m.types)}`)}"
       >
-        <!-- :icon="{ url: require('../../assets/img/marker-a.png')}" -->
+
         <GmapInfoWindow :opened="m.infoWindowOpened" @closeclick="toggleInfoWindow(m)">
           <h4>{{m.title}}</h4>
           <p>{{m.description}}</p>
-          <small>{{m.user_id}}</small>
+          <small>{{m.userName}}</small>
           <ul>
             <li v-for="type in m.types">
               {{type}}
@@ -63,6 +64,13 @@
       ...mapMutations(['addRecommendation']),
       toggleInfoWindow(marker) {
         marker.infoWindowOpened = !marker.infoWindowOpened
+      },
+      markerTypesToIcon(types) {
+        if (types.length > 1) {
+          return 'mix.png'
+        } else {
+          return types[0].toLowerCase() + ".png"
+        }
       },
       toggleMapClass(direction) {
         this.fullMap = direction
