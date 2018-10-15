@@ -22,8 +22,8 @@
     <div class="row">
       <div class="col s12">
         <ul class="tabs">
-          <li class="tab col s6 active">
-            <a @click="toggleIntNav('recommendations')">Recommendations</a>
+          <li class="tab col s6">
+            <a @click="toggleIntNav('recommendations')">Filter</a>
           </li>
           <li class="tab col s6">
             <a @click="toggleIntNav('friends')" >Friends</a>
