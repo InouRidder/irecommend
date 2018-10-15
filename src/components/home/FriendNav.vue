@@ -89,8 +89,7 @@
         this.currentUser.friends = this.currentUser.friends.filter(function(friend) {
           return !(uid == friend.uid)
         })
-        this.$store.commit('setFollowingUIDS')
-        this.$store.commit('filterByType')
+        this.$store.dispatch('filterOnUDIS')
         this.$store.dispatch('updateUser')
       },
       beFriend(friend) {
