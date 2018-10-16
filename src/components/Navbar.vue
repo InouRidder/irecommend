@@ -1,31 +1,10 @@
 <template>
-  <!-- <div>
-      <nav>
-    <div class="nav-wrapper">
-      <a href="#!" class="brand-logo">Logo</a>
-      <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-      <ul class="right hide-on-med-and-down">
-        <li><a href="sass.html">Sass</a></li>
-        <li><a href="badges.html">Components</a></li>
-        <li><a href="collapsible.html">Javascript</a></li>
-        <li><a href="mobile.html">Mobile</a></li>
-      </ul>
-    </div>
-  </nav>
-
-  <ul class="sidenav" id="mobile-demo">
-    <li><a href="sass.html">Sass</a></li>
-    <li><a href="badges.html">Components</a></li>
-    <li><a href="collapsible.html">Javascript</a></li>
-    <li><a href="mobile.html">Mobile</a></li>
-  </ul>
-  </div> -->
   <nav class="teal">
     <div class="nav-wrapper">
-      <router-link :to="{ name: 'Home' }" class="brand-logo">
-        iRecommend
+      <router-link :to="{ name: 'Home' }" class="brand-logo left">
+        <img src="../assets/sheep.png" alt="">
       </router-link>
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
+      <ul id="nav-mobile" class="right">
         <li v-if="currentUser">
           <router-link :to="{ name: 'Profile' }">{{ currentUser.firstName}}</router-link>
         </li>

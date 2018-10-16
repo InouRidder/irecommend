@@ -5,8 +5,11 @@
       :center="center"
       :zoom="12"
       id="map"
+      @dblclick="onRightClick"
+
       v-bind:class="mapWidth"
       @rightclick="onRightClick"
+      :options="{fullscreenControl: false, zoomControl: false,mapTypeControl: false}"
     >
       <gmap-marker
         v-for="m in filteredRecommendations"
@@ -18,7 +21,7 @@
         :icon="{url: require(`../../assets/${markerTypesToIcon(m.types)}`)}"
       >
 
-        <GmapInfoWindow :opened="m.infoWindowOpened" @closeclick="toggleInfoWindow(m)">
+        <GmapInfoWindow :opened="m.infoWindowOpened" @closeclick="  toggleInfoWindow(m)">
           <h4>{{m.title}}</h4>
           <p>{{m.description}}</p>
           <small>{{m.userName}}</small>
@@ -27,7 +30,6 @@
               {{type}}
             </li>
           </ul>
-
         </GmapInfoWindow>
       </gmap-marker>
     </gmap-map>
@@ -44,7 +46,7 @@
     data() {
       return {
         map: null,
-        center: {lat: 40, lng: 32},
+        center: {lat: 41.3851, lng: 2.1734},
         fullMap: true
       }
     },
@@ -104,22 +106,22 @@
 
 #map.partial {
   width: calc(100% - 250px);
-  height: 91vh;
+  height: 91%;
   margin: 0 auto;
   background: #FFF;
   position: absolute;
   left: 250px;
-  top: 9vh;
+  top: 8%;
 }
 
 #map.full {
   width: 100%;
-  height: 91vh;
+  height: 91%;
   margin: 0 auto;
   background: #FFF;
   position: absolute;
   left: 0px;
-  top: 9vh;
+  top: 8%;
 }
 
 </style>

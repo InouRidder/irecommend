@@ -118,7 +118,7 @@
 
 <style scoped>
 #sideFriendBar {
-  height: 91vh;
+  height: 91%;
   background-color: #FFF;
   width: 250px;
   z-index: 999;
@@ -142,7 +142,6 @@
   align-items: center;
 }
 .see-nav {
-  margin-top: 60px;
-  margin-left: 10px;
+  margin: 10px;
 }
 </style>
